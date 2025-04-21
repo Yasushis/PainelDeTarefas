@@ -1,8 +1,15 @@
+h1 {
+
+    color: white;
+
+}
+
 body {
 
     display: grid;
     place-items: center;
-    background-color: #ccc;
+    background-color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 }
 
@@ -23,24 +30,44 @@ input {
 
 }
 
+input:focus {
+
+    outline: none;
+}
+
 button.add {
 
     width: 20%;
     cursor: pointer;
-    background: rgb(123, 219, 123);
+    background: rgb(80, 233, 80);
     color: black;
     border: none;
-    font-weight: bold;
+    font-size: 2rem;
 
 }
 
 .div-tarefa {
 
     border: 6px solid aqua;
-    background-color: #eee;
+    background-color: rgb(49, 48, 48);
     height: 150px;
     width: 50%;
     margin-bottom: 30px;
+    padding: 10px;
+    color: white;
+    box-shadow: 0 0 20px;
+}
+
+.div-tarefa-feita {
+
+    border: 6px solid aqua;
+    background-color: rgb(49, 48, 48);
+    height: 150px;
+    width: 50%;
+    margin-bottom: 30px;
+    padding: 10px;
+    color: white;
+    box-shadow: 0 0 20px;
 }
 
 .tarefa-itens {
@@ -65,7 +92,7 @@ button.add {
 
 .tarefa-deletar {
 
-    flex: 25%;
+    flex: 1%;
     font-size: 2rem;
     text-align: center;
 
@@ -73,6 +100,7 @@ button.add {
 
 .tarefa-check {
 
+    flex: 1%;
     font-size: 2rem;
     text-align: center;
 
@@ -80,8 +108,10 @@ button.add {
 
 .tarefa-feita {
 
+    flex: 1%;
     font-size: 2rem;
     text-align: center;
+    color: rgb(4, 255, 4);
 
 }
 

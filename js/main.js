@@ -1,4 +1,5 @@
 let inputUsuario = document.getElementById("input-tarefa")
+inputDescricao = document.getElementById("input-descricao")
 let buttonAdd = document.getElementById("button-tarefa")
 let main = document.getElementById("tarefas-lista")
 let contador = 0
@@ -6,8 +7,9 @@ let contador = 0
 function addTarefa() {
 
     let valor = inputUsuario.value;
+    let valordesc = inputDescricao.value;
 
-    if ((valor !== null) && (valor !== undefined) && (valor !== "")) {
+    if (((valor !== null) && (valor !== undefined) && (valor !== "")) && ((valordesc !== null) && (valordesc !== undefined) && (valordesc !== "")))  {
 
         ++ contador
 
@@ -24,7 +26,7 @@ function addTarefa() {
             </div>
 
             <div class="tarefa-descricao">
-                <p>descricao da tarefa</p>
+                <p>${valordesc}</p>
             </div>
 
             <div class="tarefa-deletar">

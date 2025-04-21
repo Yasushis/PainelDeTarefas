@@ -15,15 +15,13 @@ body {
 
 header {
 
-    display: flex;
     margin-bottom: 30px;
-    border: black solid 2px;
 
 }
 
 input {
 
-    width: 80%;
+    width: 400px;
     height: 80px;
     font-size: 2rem;
     padding-left: 5%;
@@ -37,13 +35,31 @@ input:focus {
 
 button.add {
 
-    width: 20%;
+    width: 100px;
     cursor: pointer;
     background: rgb(80, 233, 80);
     color: black;
-    border: none;
+    border: 1px gray solid;
     font-size: 2rem;
+    border-top-right-radius: 20px;
 
+}
+
+.area-input {
+    display: flex;
+}
+
+.descricao {
+    width: 475px;
+    font-size: medium;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border: 1px gray solid;
+}
+
+.titulo {
+    border-top-left-radius: 20px;
+    border: 1px gray solid;
 }
 
 .tarefas-lista {
@@ -107,6 +123,7 @@ button.add {
     color: rgb(255, 51, 51);
     border: none;
     background-color: rgb(49, 48, 48);
+    cursor: pointer;
 
 }
 
@@ -115,6 +132,7 @@ button.add {
     flex: 1%;
     font-size: 2rem;
     text-align: center;
+    cursor: pointer;
 
 }
 
@@ -124,6 +142,7 @@ button.add {
     font-size: 2rem;
     text-align: center;
     color: rgb(4, 255, 4);
+    cursor: pointer;
 
 }
 

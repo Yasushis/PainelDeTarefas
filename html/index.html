@@ -13,8 +13,11 @@
     <h1>Lista de Tarefas</h1>
     
     <header>
-        <input type="text" placeholder="Nova tarefa" name="" id="input-tarefa">
-        <button class="add" id="button-tarefa" onclick="addTarefa()">+</button>
+        <div class="area-input">
+            <input type="text" placeholder="Título" id="input-tarefa" class="titulo">
+            <button class="add" id="button-tarefa" onclick="addTarefa()">+</button>
+        </div> 
+        <input type="text" placeholder="Descrição" id="input-descricao" class="descricao">
     </header>
 
     <div class="tarefas-lista" id="tarefas-lista">

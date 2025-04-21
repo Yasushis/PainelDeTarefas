@@ -8,62 +8,20 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
 
 </head>
-<body>
+<body id="tarefas">
 
     <h1>Lista de Tarefas</h1>
     
     <header>
-        <input type="text" placeholder="Nova tarefa" name="" id="">
-        <button class="add">+</button>
+        <input type="text" placeholder="Nova tarefa" name="" id="input-tarefa">
+        <button class="add" id="button-tarefa" onclick="addTarefa()">+</button>
     </header>
 
-    <div class="div-tarefa">
-
-        <div class="tarefa-titulo">
-            <h1>TITULO</h1>
-        </div>
-        
-        <div class="tarefa-itens">
-            
-            <div class="tarefa-check">
-                <i class="mdi mdi-circle-outline"></i>
-            </div>
-
-            <div class="tarefa-descricao">
-                <p>descricao da tarefa</p>
-            </div>
-
-            <div class="tarefa-deletar">
-                <i class="mdi mdi-delete"></i>
-            </div>
-    
-        </div>
+    <div class="tarefas-lista" id="tarefas-lista">
 
     </div>
 
-    <div class="div-tarefa-feita">
-
-        <div class="tarefa-titulo">
-            <h1>TITULO</h1>
-        </div>
-        
-        <div class="tarefa-itens">
-            
-            <div class="tarefa-feita">
-                <i class="mdi mdi-check-circle"></i>
-            </div>
-
-            <div class="tarefa-descricao">
-                <p>descricao da tarefa</p>
-            </div>
-
-            <div class="tarefa-deletar">
-                <i class="mdi mdi-delete"></i>
-            </div>
     
-        </div>
-
-    </div>
 
 
     <script src="../js/main.js"></script>

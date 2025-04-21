@@ -62,6 +62,13 @@ button.add {
     border: 1px gray solid;
 }
 
+.tarefinhas {
+
+    color: white;
+    font-size: large;
+
+}
+
 .tarefas-lista {
     width: 100%;
     display: flex;

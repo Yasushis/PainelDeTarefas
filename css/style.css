@@ -30,7 +30,8 @@ input {
 
 p {
 
-    font-size: x-large
+    font-size: x-large;
+    margin: 0px;
 }
 
 input:focus {
@@ -95,6 +96,15 @@ button.add {
     box-shadow: 0 0 20px;
 }
 
+.div-subtarefa {
+
+    display: flex;
+    background-color: rgb(49, 48, 48);
+    padding-top: 30px;
+    justify-content: space-between;
+
+}
+
 .div-tarefa-feita {
 
     border: 6px solid rgb(4, 255, 4);
@@ -111,13 +121,19 @@ button.add {
 
 .subtarefa-itens {
 
-    background-color: white;
+
 
 }
 
 .tarefa-titulo {
 
     padding-left: 30px;
+
+}
+
+.subtarefa-titulo {
+
+    
 
 }
 
@@ -132,6 +148,12 @@ button.add {
 .tarefa-deletar {
 
     flex: 1%;
+
+}
+
+.subtarefa-deletar {
+
+    padding-right: 114px;
 
 }
 
@@ -169,6 +191,14 @@ button.add {
 
 }
 
+.subtarefa-check {
+
+    cursor: pointer;
+    font-size: x-large;
+    padding-left: 140px;
+
+}
+
 .tarefa-check-feita {
 
     flex: 1%;
@@ -176,6 +206,12 @@ button.add {
     text-align: center;
     color: rgb(4, 255, 4);
     cursor: pointer;
+
+}
+
+.subtarefa-check-feita {
+
+    color: rgb(4, 255, 4);
 
 }
 

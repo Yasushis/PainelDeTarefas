@@ -3,6 +3,7 @@ let inputDescricao = document.getElementById("input-descricao")
 let buttonAdd = document.getElementById("button-tarefa")
 let main = document.getElementById("tarefas-lista")
 let contador = 0
+let contador_subtarefa = 0
 let total_tarefas = 0
 let tarefas_feitas = 0
 let tarefas_pendentes = 0
@@ -44,15 +45,16 @@ function addTarefa() {
     
         </div>
 
-        <div class="subtarefa-itens" id="area-subtarefa">
+        <div class="subtarefa-itens" id="area-subtarefa_${contador}">
 
         </div>
 
-        <div class="tarefa-subtarefa" id="subtarefa_${contador}">
-            <button class="button-subtarefa" id="adicionar-subtarefa" onclick="adicionarSubtarefa(${contador})">
+        <div class="tarefa-subtarefa" id="tarefa-subtarefa_${contador}">
+            <button class="button-subtarefa" id="adicionar-subtarefa_${contador}" onclick="adicionarSubtarefa(${contador})">
                 Adicionar subtarefa
             </button>
         </div>
+
 
     </div>`
 
@@ -66,41 +68,53 @@ function addTarefa() {
 
 function addSubtarefa(id) {
 
-    let valorsubtarefa = document.getElementById("input-subtarefa").value
+    let valorsubtarefa = document.getElementById(`input-subtarefa_${id}`).value
 
     if ((valorsubtarefa !== null) && (valorsubtarefa !== "") && (valorsubtarefa !== undefined)) {
 
-        let novaSubtarefa = `<div class="tarefa-check" onclick="marcarSubtarefa(${contador})">
-            <i id="icone_${contador}" class="mdi mdi-circle-outline"></i>
-        </div>
+        ++contador_subtarefa
 
-        <div class="tarefa-descricao">
-            <p>${valorsubtarefa}</p>
-        </div>
+        let novaSubtarefa = `
+        
+        <div class="div-subtarefa" id="subtarefa_${id}_${contador_subtarefa}">
+    
+            <div class="subtarefa-check" onclick="marcarSubtarefa('${id}_${contador_subtarefa}')">
+                <i id="iconeSubtarefa_${id}_${contador_subtarefa}" class="mdi mdi-circle-outline"></i>
+            </div>
 
-        <div class="tarefa-deletar">
-                <button onclick="deletarSubtarefa(${contador})" class="button-delete">
-                    <i class="mdi mdi-delete"></i>
-                </button>
+            <div class="subtarefa-titulo">
+                <p>${valorsubtarefa}</p>
+            </div>
+
+            <div class="subtarefa-deletar">
+                    <button onclick="deletarSubtarefa('${id}_${contador_subtarefa}')" class="button-delete">
+                        <i class="mdi mdi-delete"></i>
+                    </button>
+            </div>
+
         </div>`
 
-        var subtarefas = document.getElementById("area-subtarefa")
+        var subtarefas = document.getElementById(`area-subtarefa_${id}`)
         subtarefas.innerHTML += novaSubtarefa
 
-        document.getElementById("input-subtarefa").remove()
+        document.getElementById(`input-subtarefa_${id}`).remove()
         document.getElementById("button-subtarefa").remove()
 
-        var adicionar_subtarefa = document.getElementById("subtarefa_" + id)
-        
+        var adicionar_subtarefa = document.getElementById("tarefa-subtarefa_" + id)
+
+        adicionar_subtarefa.innerHTML = `<button class="button-subtarefa" id="adicionar-subtarefa_${id}" onclick="adicionarSubtarefa(${id})">
+                Adicionar subtarefa
+            </button>`
+
     }
 
 }
 
 function adicionarSubtarefa(id) {
 
-    var botao_tarefa = document.getElementById("adicionar-subtarefa")
-    botao_tarefa.insertAdjacentHTML('beforebegin', `<input type="text" placeholder="Subtarefa" id="input-subtarefa">
-        <button class="" id="button-subtarefa" onclick="addSubtarefa()">+</button>`)
+    var botao_tarefa = document.getElementById(`adicionar-subtarefa_${id}`)
+    botao_tarefa.insertAdjacentHTML('beforebegin', `<input type="text" placeholder="Subtarefa" id="input-subtarefa_${id}">
+        <button class="" id="button-subtarefa" onclick="addSubtarefa(${id})">+</button>`)
     botao_tarefa.remove()
 
 }
@@ -119,6 +133,44 @@ function deletarTarefa(id) {
     }
     tarefa.remove()
     document.getElementById("tarefinhas").innerHTML = `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`
+}
+
+function deletarSubtarefa(id) {
+
+    console.log(id)
+
+    var subtarefa = document.getElementById("subtarefa_" + id)
+    subtarefa.remove()
+
+}
+
+function marcarSubtarefa(id) {
+
+    var subtarefa = document.getElementById("subtarefa_" + id)
+    var classe = subtarefa.getAttribute("class")
+
+    if (classe == "div-subtarefa") {
+
+        subtarefa.classList.add("div-subtarefa-feita")
+
+        var icone = document.getElementById("iconeSubtarefa_" + id)
+        icone.classList.remove('mdi-circle-outline')
+        icone.classList.add('mdi-check-circle')
+        icone.classList.add('subtarefa-check-feita')
+
+    }
+
+    else {
+
+        subtarefa.classList.remove('div-subtarefa-feita')
+
+        var icone = document.getElementById("iconeSubtarefa_" + id)
+        icone.classList.remove('mdi-check-circle')
+        icone.classList.add('mdi-circle-outline')
+        icone.classList.remove('subtarefa-check-feita')
+
+    }
+
 }
 
 function marcarTarefa(id) {

@@ -98,7 +98,7 @@ function addSubtarefa(id) {
         subtarefas.innerHTML += novaSubtarefa
 
         document.getElementById(`input-subtarefa_${id}`).remove()
-        document.getElementById("button-subtarefa").remove()
+        document.getElementById(`button-subtarefa_${id}`).remove()
 
         var adicionar_subtarefa = document.getElementById("tarefa-subtarefa_" + id)
 
@@ -113,8 +113,8 @@ function addSubtarefa(id) {
 function adicionarSubtarefa(id) {
 
     var botao_tarefa = document.getElementById(`adicionar-subtarefa_${id}`)
-    botao_tarefa.insertAdjacentHTML('beforebegin', `<input type="text" placeholder="Subtarefa" id="input-subtarefa_${id}">
-        <button class="" id="button-subtarefa" onclick="addSubtarefa(${id})">+</button>`)
+    botao_tarefa.insertAdjacentHTML('beforebegin', `<input type="text" class="input-sub" placeholder="Subtarefa" id="input-subtarefa_${id}">
+        <button class="button2-subtarefa" id="button-subtarefa_${id}" onclick="addSubtarefa(${id})">+</button>`)
     botao_tarefa.remove()
 
 }

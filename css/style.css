@@ -28,6 +28,11 @@ input {
 
 }
 
+p {
+
+    font-size: x-large
+}
+
 input:focus {
 
     outline: none;
@@ -85,6 +90,7 @@ button.add {
     width: 50%;
     margin-bottom: 30px;
     padding: 10px;
+    padding-bottom: 60px;
     color: white;
     box-shadow: 0 0 20px;
 }
@@ -100,6 +106,12 @@ button.add {
     display: flex;
     justify-content: center;
     align-items: center;
+
+}
+
+.subtarefa-itens {
+
+    background-color: white;
 
 }
 
@@ -123,6 +135,14 @@ button.add {
 
 }
 
+.tarefa-subtarefa {
+
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+
+}
+
 .button-delete {
 
     font-size: 2rem;
@@ -131,6 +151,12 @@ button.add {
     border: none;
     background-color: rgb(49, 48, 48);
     cursor: pointer;
+
+}
+
+.button-subtarefa {
+
+    justify-content: center;
 
 }
 

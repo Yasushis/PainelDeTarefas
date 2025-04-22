@@ -1,5 +1,5 @@
 let inputUsuario = document.getElementById("input-tarefa")
-inputDescricao = document.getElementById("input-descricao")
+let inputDescricao = document.getElementById("input-descricao")
 let buttonAdd = document.getElementById("button-tarefa")
 let main = document.getElementById("tarefas-lista")
 let contador = 0
@@ -44,6 +44,16 @@ function addTarefa() {
     
         </div>
 
+        <div class="subtarefa-itens" id="area-subtarefa">
+
+        </div>
+
+        <div class="tarefa-subtarefa" id="subtarefa_${contador}">
+            <button class="button-subtarefa" id="adicionar-subtarefa" onclick="adicionarSubtarefa(${contador})">
+                Adicionar subtarefa
+            </button>
+        </div>
+
     </div>`
 
     main.innerHTML += novaTarefa
@@ -52,6 +62,47 @@ function addTarefa() {
     inputDescricao.value = ""
 
     }
+}
+
+function addSubtarefa(id) {
+
+    let valorsubtarefa = document.getElementById("input-subtarefa").value
+
+    if ((valorsubtarefa !== null) && (valorsubtarefa !== "") && (valorsubtarefa !== undefined)) {
+
+        let novaSubtarefa = `<div class="tarefa-check" onclick="marcarSubtarefa(${contador})">
+            <i id="icone_${contador}" class="mdi mdi-circle-outline"></i>
+        </div>
+
+        <div class="tarefa-descricao">
+            <p>${valorsubtarefa}</p>
+        </div>
+
+        <div class="tarefa-deletar">
+                <button onclick="deletarSubtarefa(${contador})" class="button-delete">
+                    <i class="mdi mdi-delete"></i>
+                </button>
+        </div>`
+
+        var subtarefas = document.getElementById("area-subtarefa")
+        subtarefas.innerHTML += novaSubtarefa
+
+        document.getElementById("input-subtarefa").remove()
+        document.getElementById("button-subtarefa").remove()
+
+        var adicionar_subtarefa = document.getElementById("subtarefa_" + id)
+        
+    }
+
+}
+
+function adicionarSubtarefa(id) {
+
+    var botao_tarefa = document.getElementById("adicionar-subtarefa")
+    botao_tarefa.insertAdjacentHTML('beforebegin', `<input type="text" placeholder="Subtarefa" id="input-subtarefa">
+        <button class="" id="button-subtarefa" onclick="addSubtarefa()">+</button>`)
+    botao_tarefa.remove()
+
 }
 
 function deletarTarefa(id) {

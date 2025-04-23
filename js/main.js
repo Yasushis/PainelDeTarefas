@@ -39,6 +39,8 @@ function addTarefa() {
     inputUsuario.focus()
     inputDescricao.value = ""
 
+    atualizarContadores();
+
     }
 }
 
@@ -46,28 +48,27 @@ function criarElementoTarefa(tarefa) {
     let classeTarefa = tarefa.concluida ? "div-tarefa div-tarefa-feita" : "div-tarefa";
     let classeIcone = tarefa.concluida ? "mdi-check-circle tarefa-check-feita" : "mdi-circle-outline";
 
-    let htmlTarefa = `<div class="${classeTarefa}" id="${tarefa.id}">
+    let tarefaDiv = document.createElement("div");
+    tarefaDiv.className = classeTarefa;
+    tarefaDiv.id = tarefa.id;
 
+    tarefaDiv.innerHTML = `
         <div class="tarefa-titulo">
             <h1>${tarefa.titulo}</h1>
         </div>
         
         <div class="tarefa-itens">
-            
             <div class="tarefa-check" onclick="marcarTarefa(${tarefa.id})">
                 <i id="icone_${tarefa.id}" class="mdi ${classeIcone}"></i>
             </div>
-
             <div class="tarefa-descricao">
                 <p>${tarefa.descricao}</p>
             </div>
-
             <div class="tarefa-deletar">
                 <button onclick="deletarTarefa(${tarefa.id})" class="button-delete">
                     <i class="mdi mdi-delete"></i>
                 </button>
             </div>
-    
         </div>
 
         <div class="subtarefa-itens" id="area-subtarefa_${tarefa.id}">
@@ -91,11 +92,11 @@ function criarElementoTarefa(tarefa) {
                 Adicionar subtarefa
             </button>
         </div>
+    `;
 
-    </div>`;
-
-    main.innerHTML += htmlTarefa;
+    main.appendChild(tarefaDiv);
 }
+
 
 
 function addSubtarefa(id) {
@@ -173,6 +174,8 @@ function deletarTarefa(id) {
     tarefa.remove();
     document.getElementById("tarefinhas").innerHTML =
         `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
+    
+    atualizarContadores();
 }
 
 
@@ -257,6 +260,8 @@ function marcarTarefa(id) {
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     document.getElementById("tarefinhas").innerHTML =
         `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
+
+    atualizarContadores();
 }
 
 function carregarTarefas() {
@@ -327,15 +332,29 @@ function carregarTarefas() {
         `;
 
         main.innerHTML += htmlTarefa;
+        atualizarContadores();
     }
 
     document.getElementById("tarefinhas").innerHTML =
         `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
 }
 
+function atualizarContadores() {
+    let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+    total_tarefas = tarefas.length;
+    tarefas_feitas = tarefas.filter(t => t.concluida).length;
+    tarefas_pendentes = total_tarefas - tarefas_feitas;
+
+    document.getElementById("tarefinhas").innerHTML =
+        `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
+}
+
+
 function filtrarTarefas(filtro) {
-    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-    let tarefasFiltradas;
+    let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+    main.innerHTML = "";
+
+    let tarefasFiltradas = [];
 
     if (filtro === "feitas") {
         tarefasFiltradas = tarefas.filter(t => t.concluida);
@@ -345,18 +364,21 @@ function filtrarTarefas(filtro) {
         tarefasFiltradas = tarefas;
     }
 
-    total_tarefas = tarefas.length;
-    tarefas_feitas = tarefas.filter(t => t.concluida).length;
-    tarefas_pendentes = tarefas.filter(t => !t.concluida).length;
-
-    main.innerHTML = "";
     for (let tarefa of tarefasFiltradas) {
         criarElementoTarefa(tarefa);
     }
 
-    document.getElementById("tarefinhas").innerHTML =
-        `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
+    atualizarContadores();
+
+    const inputSection = document.getElementById("input-section");
+    if (filtro === "todas") {
+        inputSection.style.display = "block";
+    } else {
+        inputSection.style.display = "none";
+    }
 }
+
+
 
 
 
@@ -365,3 +387,8 @@ window.onload = function() {
     carregarTarefas()
 
 };
+
+function exibirInputArea(exibir) {
+    let area = document.getElementById("input-area");
+    area.style.display = exibir ? "block" : "none";
+}

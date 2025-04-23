@@ -1,4 +1,4 @@
-# 📋 Projeto Lista de Tarefas
+# 📋 Projeto Painel de Tarefas
 
 Uma aplicação web simples de lista de tarefas com suporte a subtarefas, filtros e armazenamento local. Criada com HTML, CSS e JavaScript puro.
 
@@ -36,12 +36,12 @@ O maior desafio foi implementar o filtro sem quebrar a estrutura de criação di
 
 ---
 
-## 🔧 Melhorias possíveis
+## 🔧 Melhorias Possíveis
 
 3. O que faria diferente se tivesse mais tempo?
 
 Com mais tempo, eu gostaria de adicionar:
-- Ordenação customizada (por data, prioridade, nome...)
+- Ordenação customizada (além da ordenação por ordem de criação)
 - Filtro e busca por nome da tarefa
 - Suporte a datas de criação e vencimento
 
@@ -52,9 +52,9 @@ Com mais tempo, eu gostaria de adicionar:
 4. O que faria diferente se fosse para um cliente real?
 
 Se esse projeto fosse para um cliente, eu:
-- Estruturaria melhor os arquivos (JS modularizado)
+- Estruturaria melhor os arquivos
 - Comentaria mais o código
-- Usaria frameworks ou bibliotecas para maior escalabilidade
+- Usaria frameworks ou bibliotecas
 
 ---
 

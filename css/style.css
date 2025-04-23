@@ -58,6 +58,14 @@ button.add {
 
 }
 
+.botoes-filtro {
+
+    cursor: pointer;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    color: whitesmoke;
+    border: 1px gray solid;
+}
+
 .input-sub {
 
     font-size: 20px;

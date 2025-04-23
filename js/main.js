@@ -43,7 +43,10 @@ function addTarefa() {
 }
 
 function criarElementoTarefa(tarefa) {
-    let htmlTarefa = `<div class="div-tarefa" id="${tarefa.id}">
+    let classeTarefa = tarefa.concluida ? "div-tarefa div-tarefa-feita" : "div-tarefa";
+    let classeIcone = tarefa.concluida ? "mdi-check-circle tarefa-check-feita" : "mdi-circle-outline";
+
+    let htmlTarefa = `<div class="${classeTarefa}" id="${tarefa.id}">
 
         <div class="tarefa-titulo">
             <h1>${tarefa.titulo}</h1>
@@ -52,7 +55,7 @@ function criarElementoTarefa(tarefa) {
         <div class="tarefa-itens">
             
             <div class="tarefa-check" onclick="marcarTarefa(${tarefa.id})">
-                <i id="icone_${tarefa.id}" class="mdi ${tarefa.concluida ? 'mdi-check-circle' : 'mdi-circle-outline'}"></i>
+                <i id="icone_${tarefa.id}" class="mdi ${classeIcone}"></i>
             </div>
 
             <div class="tarefa-descricao">
@@ -67,7 +70,21 @@ function criarElementoTarefa(tarefa) {
     
         </div>
 
-        <div class="subtarefa-itens" id="area-subtarefa_${tarefa.id}"></div>
+        <div class="subtarefa-itens" id="area-subtarefa_${tarefa.id}">
+            ${tarefa.subtarefas.map((sub, i) => `
+                <div class="div-subtarefa ${sub.concluida ? 'div-subtarefa-feita' : ''}" id="subtarefa_${tarefa.id}_${i}">
+                    <div class="subtarefa-check" onclick="marcarSubtarefa('${tarefa.id}_${i}')">
+                        <i id="iconeSubtarefa_${tarefa.id}_${i}" class="mdi ${sub.concluida ? 'mdi-check-circle subtarefa-check-feita' : 'mdi-circle-outline'}"></i>
+                    </div>
+                    <div class="subtarefa-titulo"><p>${sub.texto}</p></div>
+                    <div class="subtarefa-deletar">
+                        <button onclick="deletarSubtarefa('${tarefa.id}_${i}')" class="button-delete">
+                            <i class="mdi mdi-delete"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
 
         <div class="tarefa-subtarefa" id="tarefa-subtarefa_${tarefa.id}">
             <button class="button-subtarefa" id="adicionar-subtarefa_${tarefa.id}" onclick="adicionarSubtarefa(${tarefa.id})">
@@ -79,6 +96,7 @@ function criarElementoTarefa(tarefa) {
 
     main.innerHTML += htmlTarefa;
 }
+
 
 function addSubtarefa(id) {
     let valorsubtarefa = document.getElementById(`input-subtarefa_${id}`).value;
@@ -248,7 +266,7 @@ function carregarTarefas() {
     tarefas_pendentes = 0;
     tarefas_feitas = 0;
 
-    main.innerHTML = ""; // limpa o conteúdo atual
+    main.innerHTML = "";
 
     for (let tarefa of tarefas) {
         ++total_tarefas;
@@ -314,6 +332,32 @@ function carregarTarefas() {
     document.getElementById("tarefinhas").innerHTML =
         `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
 }
+
+function filtrarTarefas(filtro) {
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+    let tarefasFiltradas;
+
+    if (filtro === "feitas") {
+        tarefasFiltradas = tarefas.filter(t => t.concluida);
+    } else if (filtro === "pendentes") {
+        tarefasFiltradas = tarefas.filter(t => !t.concluida);
+    } else {
+        tarefasFiltradas = tarefas;
+    }
+
+    total_tarefas = tarefas.length;
+    tarefas_feitas = tarefas.filter(t => t.concluida).length;
+    tarefas_pendentes = tarefas.filter(t => !t.concluida).length;
+
+    main.innerHTML = "";
+    for (let tarefa of tarefasFiltradas) {
+        criarElementoTarefa(tarefa);
+    }
+
+    document.getElementById("tarefinhas").innerHTML =
+        `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
+}
+
 
 
 window.onload = function() {

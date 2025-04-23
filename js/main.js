@@ -21,44 +21,20 @@ function addTarefa() {
 
         document.getElementById("tarefinhas").innerHTML = `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`
 
-        let novaTarefa = `<div class="div-tarefa" id="${contador}">
+        let novaTarefa = {
+            id: contador,
+            titulo: valor,
+            descricao: valordesc,
+            concluida: false,
+            subtarefas: []
+        };
 
-        <div class="tarefa-titulo">
-            <h1>${valor}</h1>
-        </div>
-        
-        <div class="tarefa-itens">
-            
-            <div class="tarefa-check" onclick="marcarTarefa(${contador})">
-                <i id="icone_${contador}" class="mdi mdi-circle-outline"></i>
-            </div>
+        let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+        tarefas.push(novaTarefa);
+        localStorage.setItem('tarefas', JSON.stringify(tarefas));
 
-            <div class="tarefa-descricao">
-                <p>${valordesc}</p>
-            </div>
+        criarElementoTarefa(novaTarefa);
 
-            <div class="tarefa-deletar">
-                    <button onclick="deletarTarefa(${contador})" class="button-delete">
-                        <i class="mdi mdi-delete"></i>
-                    </button>
-            </div>
-    
-        </div>
-
-        <div class="subtarefa-itens" id="area-subtarefa_${contador}">
-
-        </div>
-
-        <div class="tarefa-subtarefa" id="tarefa-subtarefa_${contador}">
-            <button class="button-subtarefa" id="adicionar-subtarefa_${contador}" onclick="adicionarSubtarefa(${contador})">
-                Adicionar subtarefa
-            </button>
-        </div>
-
-
-    </div>`
-
-    main.innerHTML += novaTarefa
     inputUsuario.value = ""
     inputUsuario.focus()
     inputDescricao.value = ""
@@ -66,49 +42,88 @@ function addTarefa() {
     }
 }
 
-function addSubtarefa(id) {
+function criarElementoTarefa(tarefa) {
+    let htmlTarefa = `<div class="div-tarefa" id="${tarefa.id}">
 
-    let valorsubtarefa = document.getElementById(`input-subtarefa_${id}`).value
-
-    if ((valorsubtarefa !== null) && (valorsubtarefa !== "") && (valorsubtarefa !== undefined)) {
-
-        ++contador_subtarefa
-
-        let novaSubtarefa = `
+        <div class="tarefa-titulo">
+            <h1>${tarefa.titulo}</h1>
+        </div>
         
-        <div class="div-subtarefa" id="subtarefa_${id}_${contador_subtarefa}">
+        <div class="tarefa-itens">
+            
+            <div class="tarefa-check" onclick="marcarTarefa(${tarefa.id})">
+                <i id="icone_${tarefa.id}" class="mdi ${tarefa.concluida ? 'mdi-check-circle' : 'mdi-circle-outline'}"></i>
+            </div>
+
+            <div class="tarefa-descricao">
+                <p>${tarefa.descricao}</p>
+            </div>
+
+            <div class="tarefa-deletar">
+                <button onclick="deletarTarefa(${tarefa.id})" class="button-delete">
+                    <i class="mdi mdi-delete"></i>
+                </button>
+            </div>
     
-            <div class="subtarefa-check" onclick="marcarSubtarefa('${id}_${contador_subtarefa}')">
-                <i id="iconeSubtarefa_${id}_${contador_subtarefa}" class="mdi mdi-circle-outline"></i>
-            </div>
+        </div>
 
-            <div class="subtarefa-titulo">
-                <p>${valorsubtarefa}</p>
-            </div>
+        <div class="subtarefa-itens" id="area-subtarefa_${tarefa.id}"></div>
 
-            <div class="subtarefa-deletar">
+        <div class="tarefa-subtarefa" id="tarefa-subtarefa_${tarefa.id}">
+            <button class="button-subtarefa" id="adicionar-subtarefa_${tarefa.id}" onclick="adicionarSubtarefa(${tarefa.id})">
+                Adicionar subtarefa
+            </button>
+        </div>
+
+    </div>`;
+
+    main.innerHTML += htmlTarefa;
+}
+
+function addSubtarefa(id) {
+    let valorsubtarefa = document.getElementById(`input-subtarefa_${id}`).value;
+
+    if (valorsubtarefa) {
+        ++contador_subtarefa;
+
+        let novaSubtarefaHTML = `
+            <div class="div-subtarefa" id="subtarefa_${id}_${contador_subtarefa}">
+                <div class="subtarefa-check" onclick="marcarSubtarefa('${id}_${contador_subtarefa}')">
+                    <i id="iconeSubtarefa_${id}_${contador_subtarefa}" class="mdi mdi-circle-outline"></i>
+                </div>
+                <div class="subtarefa-titulo">
+                    <p>${valorsubtarefa}</p>
+                </div>
+                <div class="subtarefa-deletar">
                     <button onclick="deletarSubtarefa('${id}_${contador_subtarefa}')" class="button-delete">
                         <i class="mdi mdi-delete"></i>
                     </button>
-            </div>
+                </div>
+            </div>`;
 
-        </div>`
+        let subtarefas = document.getElementById(`area-subtarefa_${id}`);
+        subtarefas.innerHTML += novaSubtarefaHTML;
 
-        var subtarefas = document.getElementById(`area-subtarefa_${id}`)
-        subtarefas.innerHTML += novaSubtarefa
+        let novaSubtarefaObj = {
+            texto: valorsubtarefa,
+            concluida: false
+        };
 
-        document.getElementById(`input-subtarefa_${id}`).remove()
-        document.getElementById(`button-subtarefa_${id}`).remove()
+        let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+        let index = tarefas.findIndex(t => t.id === id);
+        if (index !== -1) {
+            tarefas[index].subtarefas.push(novaSubtarefaObj);
+            localStorage.setItem('tarefas', JSON.stringify(tarefas));
+        }
 
-        var adicionar_subtarefa = document.getElementById("tarefa-subtarefa_" + id)
+        document.getElementById(`input-subtarefa_${id}`).remove();
+        document.getElementById(`button-subtarefa_${id}`).remove();
 
-        adicionar_subtarefa.innerHTML = `<button class="button-subtarefa" id="adicionar-subtarefa_${id}" onclick="adicionarSubtarefa(${id})">
-                Adicionar subtarefa
-            </button>`
-
+        let adicionar_subtarefa = document.getElementById(`tarefa-subtarefa_${id}`);
+        adicionar_subtarefa.innerHTML = `<button class="button-subtarefa" id="adicionar-subtarefa_${id}" onclick="adicionarSubtarefa(${id})">Adicionar subtarefa</button>`;
     }
-
 }
+
 
 function adicionarSubtarefa(id) {
 
@@ -120,24 +135,30 @@ function adicionarSubtarefa(id) {
 }
 
 function deletarTarefa(id) {
+    let tarefa = document.getElementById(id);
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
 
-    var tarefa = document.getElementById(id)
-    --total_tarefas
-    var classe = tarefa.getAttribute("class")
+    let index = tarefas.findIndex(t => t.id === id);
+    if (index !== -1) {
+        let removida = tarefas.splice(index, 1)[0];
 
-    if (classe == "div-tarefa") {
-        --tarefas_pendentes
+        --total_tarefas;
+        if (removida.concluida) {
+            --tarefas_feitas;
+        } else {
+            --tarefas_pendentes;
+        }
+
+        localStorage.setItem('tarefas', JSON.stringify(tarefas));
     }
-    else {
-        --tarefas_feitas
-    }
-    tarefa.remove()
-    document.getElementById("tarefinhas").innerHTML = `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`
+
+    tarefa.remove();
+    document.getElementById("tarefinhas").innerHTML =
+        `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
 }
 
-function deletarSubtarefa(id) {
 
-    console.log(id)
+function deletarSubtarefa(id) {
 
     var subtarefa = document.getElementById("subtarefa_" + id)
     subtarefa.remove()
@@ -174,37 +195,102 @@ function marcarSubtarefa(id) {
 }
 
 function marcarTarefa(id) {
+    let item = document.getElementById(id);
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
 
-    var item = document.getElementById(id)
-    var classe = item.getAttribute("class")
+    let index = tarefas.findIndex(t => t.id === id);
+    if (index === -1) return;
 
-    if (classe == "div-tarefa") {
+    if (!tarefas[index].concluida) {
+        tarefas[index].concluida = true;
+        item.classList.add('div-tarefa-feita');
+        --tarefas_pendentes;
+        ++tarefas_feitas;
 
-        item.classList.add('div-tarefa-feita')
+        let icone = document.getElementById("icone_" + id);
+        icone.classList.remove('mdi-circle-outline');
+        icone.classList.add('mdi-check-circle');
+        icone.classList.add('tarefa-check-feita');
+    } else {
+        tarefas[index].concluida = false;
+        item.classList.remove('div-tarefa-feita');
+        --tarefas_feitas;
+        ++tarefas_pendentes;
 
-        --tarefas_pendentes
-        ++tarefas_feitas
-        document.getElementById("tarefinhas").innerHTML = `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`
-
-        var icone = document.getElementById("icone_" + id)
-        icone.classList.remove('mdi-circle-outline')
-        icone.classList.add('mdi-check-circle')
-        icone.classList.add('tarefa-check-feita')
+        let icone = document.getElementById("icone_" + id);
+        icone.classList.remove('mdi-check-circle');
+        icone.classList.add('mdi-circle-outline');
+        icone.classList.remove('tarefa-check-feita');
     }
 
-    else {
-
-        item.classList.remove('div-tarefa-feita')
-
-        --tarefas_feitas
-        ++tarefas_pendentes
-        document.getElementById("tarefinhas").innerHTML = `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`
-
-        var icone = document.getElementById("icone_" + id)
-        icone.classList.remove('mdi-check-circle')
-        icone.classList.add('mdi-circle-outline')
-        icone.classList.remove('tarefa-check-feita')
-
-    }
-
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    document.getElementById("tarefinhas").innerHTML =
+        `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
 }
+
+function carregarTarefas() {
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+
+    total_tarefas = 0;
+    tarefas_pendentes = 0;
+    tarefas_feitas = 0;
+
+    main.innerHTML = ""; // limpa o conteúdo atual
+
+    for (let tarefa of tarefas) {
+        ++total_tarefas;
+        tarefa.concluida ? ++tarefas_feitas : ++tarefas_pendentes;
+
+        let classe = tarefa.concluida ? "div-tarefa div-tarefa-feita" : "div-tarefa";
+        let iconeClasse = tarefa.concluida ? "mdi-check-circle tarefa-check-feita" : "mdi-circle-outline";
+
+        let htmlTarefa = `
+            <div class="${classe}" id="${tarefa.id}">
+                <div class="tarefa-titulo"><h1>${tarefa.titulo}</h1></div>
+                <div class="tarefa-itens">
+                    <div class="tarefa-check" onclick="marcarTarefa(${tarefa.id})">
+                        <i id="icone_${tarefa.id}" class="mdi ${iconeClasse}"></i>
+                    </div>
+                    <div class="tarefa-descricao"><p>${tarefa.descricao}</p></div>
+                    <div class="tarefa-deletar">
+                        <button onclick="deletarTarefa(${tarefa.id})" class="button-delete">
+                            <i class="mdi mdi-delete"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="subtarefa-itens" id="area-subtarefa_${tarefa.id}">
+                    ${tarefa.subtarefas.map((sub, i) => `
+                        <div class="div-subtarefa ${sub.concluida ? 'div-subtarefa-feita' : ''}" id="subtarefa_${tarefa.id}_${i}">
+                            <div class="subtarefa-check" onclick="marcarSubtarefa('${tarefa.id}_${i}')">
+                                <i id="iconeSubtarefa_${tarefa.id}_${i}" class="mdi ${sub.concluida ? 'mdi-check-circle subtarefa-check-feita' : 'mdi-circle-outline'}"></i>
+                            </div>
+                            <div class="subtarefa-titulo"><p>${sub.texto}</p></div>
+                            <div class="subtarefa-deletar">
+                                <button onclick="deletarSubtarefa('${tarefa.id}_${i}')" class="button-delete">
+                                    <i class="mdi mdi-delete"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="tarefa-subtarefa" id="tarefa-subtarefa_${tarefa.id}">
+                    <button class="button-subtarefa" id="adicionar-subtarefa_${tarefa.id}" onclick="adicionarSubtarefa(${tarefa.id})">
+                        Adicionar subtarefa
+                    </button>
+                </div>
+            </div>
+        `;
+
+        main.innerHTML += htmlTarefa;
+    }
+
+    document.getElementById("tarefinhas").innerHTML =
+        `Tarefas: ${total_tarefas} <br> Tarefas feitas: ${tarefas_feitas} <br> Tarefas pendentes: ${tarefas_pendentes}`;
+}
+
+
+window.onload = function() {
+    
+    carregarTarefas()
+
+};

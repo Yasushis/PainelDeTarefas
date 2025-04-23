@@ -84,37 +84,36 @@ function addSubtarefa(id) {
     let valorsubtarefa = document.getElementById(`input-subtarefa_${id}`).value;
 
     if (valorsubtarefa) {
-        ++contador_subtarefa;
-
-        let novaSubtarefaHTML = `
-            <div class="div-subtarefa" id="subtarefa_${id}_${contador_subtarefa}">
-                <div class="subtarefa-check" onclick="marcarSubtarefa('${id}_${contador_subtarefa}')">
-                    <i id="iconeSubtarefa_${id}_${contador_subtarefa}" class="mdi mdi-circle-outline"></i>
-                </div>
-                <div class="subtarefa-titulo">
-                    <p>${valorsubtarefa}</p>
-                </div>
-                <div class="subtarefa-deletar">
-                    <button onclick="deletarSubtarefa('${id}_${contador_subtarefa}')" class="button-delete">
-                        <i class="mdi mdi-delete"></i>
-                    </button>
-                </div>
-            </div>`;
-
-        let subtarefas = document.getElementById(`area-subtarefa_${id}`);
-        subtarefas.innerHTML += novaSubtarefaHTML;
+        let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+        let index = tarefas.findIndex(t => t.id == id); 
+        if (index === -1) return;
 
         let novaSubtarefaObj = {
             texto: valorsubtarefa,
             concluida: false
         };
 
-        let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-        let index = tarefas.findIndex(t => t.id === id);
-        if (index !== -1) {
-            tarefas[index].subtarefas.push(novaSubtarefaObj);
-            localStorage.setItem('tarefas', JSON.stringify(tarefas));
-        }
+        tarefas[index].subtarefas.push(novaSubtarefaObj);
+        localStorage.setItem('tarefas', JSON.stringify(tarefas));
+
+        let novaIndex = tarefas[index].subtarefas.length - 1;
+
+        let novaSubtarefaHTML = `
+            <div class="div-subtarefa" id="subtarefa_${id}_${novaIndex}">
+                <div class="subtarefa-check" onclick="marcarSubtarefa('${id}_${novaIndex}')">
+                    <i id="iconeSubtarefa_${id}_${novaIndex}" class="mdi mdi-circle-outline"></i>
+                </div>
+                <div class="subtarefa-titulo">
+                    <p>${valorsubtarefa}</p>
+                </div>
+                <div class="subtarefa-deletar">
+                    <button onclick="deletarSubtarefa('${id}_${novaIndex}')" class="button-delete">
+                        <i class="mdi mdi-delete"></i>
+                    </button>
+                </div>
+            </div>`;
+
+        document.getElementById(`area-subtarefa_${id}`).innerHTML += novaSubtarefaHTML;
 
         document.getElementById(`input-subtarefa_${id}`).remove();
         document.getElementById(`button-subtarefa_${id}`).remove();
@@ -123,6 +122,7 @@ function addSubtarefa(id) {
         adicionar_subtarefa.innerHTML = `<button class="button-subtarefa" id="adicionar-subtarefa_${id}" onclick="adicionarSubtarefa(${id})">Adicionar subtarefa</button>`;
     }
 }
+
 
 
 function adicionarSubtarefa(id) {
@@ -159,40 +159,53 @@ function deletarTarefa(id) {
 
 
 function deletarSubtarefa(id) {
+    const [tarefaId, subIndex] = id.split('_');
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+    let tarefaIndex = tarefas.findIndex(t => t.id == tarefaId);
+    if (tarefaIndex === -1) return;
 
-    var subtarefa = document.getElementById("subtarefa_" + id)
-    subtarefa.remove()
+    tarefas[tarefaIndex].subtarefas.splice(subIndex, 1);
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
 
+    document.getElementById("subtarefa_" + id).remove();
+    carregarTarefas();
 }
+
+
 
 function marcarSubtarefa(id) {
+    let subtarefa = document.getElementById("subtarefa_" + id);
+    let icone = document.getElementById("iconeSubtarefa_" + id);
 
-    var subtarefa = document.getElementById("subtarefa_" + id)
-    var classe = subtarefa.getAttribute("class")
+    let [tarefaId, subtarefaIndex] = id.split('_');
 
-    if (classe == "div-subtarefa") {
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+    let tarefaIndex = tarefas.findIndex(t => t.id == tarefaId);
 
-        subtarefa.classList.add("div-subtarefa-feita")
+    if (tarefaIndex === -1) return;
 
-        var icone = document.getElementById("iconeSubtarefa_" + id)
-        icone.classList.remove('mdi-circle-outline')
-        icone.classList.add('mdi-check-circle')
-        icone.classList.add('subtarefa-check-feita')
+    let tarefa = tarefas[tarefaIndex];
+    let sub = tarefa.subtarefas[subtarefaIndex];
 
+    if (!sub) return;
+
+    if (!sub.concluida) {
+        subtarefa.classList.add("div-subtarefa-feita");
+        icone.classList.remove('mdi-circle-outline');
+        icone.classList.add('mdi-check-circle', 'subtarefa-check-feita');
+        sub.concluida = true;
+    } else {
+        subtarefa.classList.remove("div-subtarefa-feita");
+        icone.classList.remove('mdi-check-circle', 'subtarefa-check-feita');
+        icone.classList.add('mdi-circle-outline');
+        sub.concluida = false;
     }
 
-    else {
-
-        subtarefa.classList.remove('div-subtarefa-feita')
-
-        var icone = document.getElementById("iconeSubtarefa_" + id)
-        icone.classList.remove('mdi-check-circle')
-        icone.classList.add('mdi-circle-outline')
-        icone.classList.remove('subtarefa-check-feita')
-
-    }
-
+    tarefas[tarefaIndex].subtarefas[subtarefaIndex] = sub;
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
 }
+
+
 
 function marcarTarefa(id) {
     let item = document.getElementById(id);
@@ -243,6 +256,20 @@ function carregarTarefas() {
 
         let classe = tarefa.concluida ? "div-tarefa div-tarefa-feita" : "div-tarefa";
         let iconeClasse = tarefa.concluida ? "mdi-check-circle tarefa-check-feita" : "mdi-circle-outline";
+
+        let subtarefasHTML = tarefa.subtarefas.map((sub, i) => `
+            <div class="div-subtarefa ${sub.concluida ? 'div-subtarefa-feita' : ''}" id="subtarefa_${tarefa.id}_${i}">
+                <div class="subtarefa-check" onclick="marcarSubtarefa('${tarefa.id}_${i}')">
+                    <i id="iconeSubtarefa_${tarefa.id}_${i}" class="mdi ${sub.concluida ? 'mdi-check-circle subtarefa-check-feita' : 'mdi-circle-outline'}"></i>
+                </div>
+                <div class="subtarefa-titulo"><p>${sub.texto}</p></div>
+                <div class="subtarefa-deletar">
+                    <button onclick="deletarSubtarefa('${tarefa.id}_${i}')" class="button-delete">
+                        <i class="mdi mdi-delete"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
 
         let htmlTarefa = `
             <div class="${classe}" id="${tarefa.id}">
